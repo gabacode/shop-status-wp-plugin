@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import apiFetch from "@wordpress/api-fetch";
 
+import { Header } from "./Header";
 import { AcceptReservations } from "./AcceptReservations";
 import { OpeningDays } from "./OpeningDays";
 import { OpeningExceptions } from "./OpeningExceptions";
@@ -37,6 +38,23 @@ const App = () => {
     fetchData();
   }, []);
 
+  const validate = (options) => {
+    if (options.acceptReservations === true) {
+      if (options.openingTimes.length === 0) {
+        alert("Aggiungere almeno un orario di apertura");
+        return false;
+      }
+      const hasEmptyOpeningTime = options.openingTimes.some(
+        (time) => time.on_days.length === 0
+      );
+      if (hasEmptyOpeningTime) {
+        alert("Selezionare almeno un giorno per ogni fascia oraria");
+        return false;
+      }
+    }
+    return true;
+  };
+
   const updateShopStatus = async () => {
     const options = {
       acceptReservations,
@@ -44,6 +62,10 @@ const App = () => {
       openingTimes,
       openingExceptions,
     };
+
+    if (!validate(options)) {
+      return;
+    }
 
     setIsLoading(true);
 
@@ -53,8 +75,9 @@ const App = () => {
         method: "POST",
         data: options,
       });
+      alert("Salvataggio effettuato");
     } catch (error) {
-      console.log("POST: " + error.message);
+      alert(error.message);
     } finally {
       setIsLoading(false);
     }
@@ -65,9 +88,13 @@ const App = () => {
   };
 
   return isLoading ? (
-    <div className="App">Loading...</div>
+    <div className="loader">Loading...</div>
   ) : (
     <div className="App">
+      <Header>
+        <h1>Shop Status</h1>
+        <button onClick={handleSave}>Salva</button>
+      </Header>
       <AcceptReservations
         title="Opzioni"
         acceptReservations={acceptReservations}
@@ -91,10 +118,6 @@ const App = () => {
         openingExceptions={openingExceptions}
         setOpeningExceptions={setOpeningExceptions}
       />
-      <hr />
-      <button className="float-right" onClick={handleSave}>
-        Salva
-      </button>
     </div>
   );
 };

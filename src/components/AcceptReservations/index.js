@@ -8,6 +8,7 @@ export const AcceptReservations = ({
       <h1>{title}</h1>
       <div>
         <input
+          id="accept-reservations"
           type="checkbox"
           checked={acceptReservations}
           onChange={(e) => setAcceptReservations(e.target.checked)}

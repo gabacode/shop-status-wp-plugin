@@ -3,6 +3,29 @@
   box-sizing: border-box;
 }
 
+.App {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+hr {
+  margin: 1rem 0;
+}
+
+.loader {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .day-selector {
   display: inline-flex;
   align-items: center;
