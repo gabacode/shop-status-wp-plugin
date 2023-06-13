@@ -1,11 +1,18 @@
 import React, { useEffect, useState } from "react";
 import apiFetch from "@wordpress/api-fetch";
 
+import "@wordpress/components/build-style/style.css";
+import "@icon/dashicons/dashicons.css";
+
+import { Button } from "@wordpress/components";
+
 import { Header } from "./Header";
 import { AcceptReservations } from "./AcceptReservations";
 import { OpeningDays } from "./OpeningDays";
 import { OpeningExceptions } from "./OpeningExceptions";
 import { OpeningTimes } from "./OpeningTimes";
+
+import { Logger } from "./atoms/logger";
 
 const App = () => {
   const API_URL = "/wp-json/shop-status/v1";
@@ -41,14 +48,14 @@ const App = () => {
   const validate = (options) => {
     if (options.acceptReservations === true) {
       if (options.openingTimes.length === 0) {
-        alert("Aggiungere almeno un orario di apertura");
+        // alert("Aggiungere almeno un orario di apertura");
         return false;
       }
       const hasEmptyOpeningTime = options.openingTimes.some(
         (time) => time.on_days.length === 0
       );
       if (hasEmptyOpeningTime) {
-        alert("Selezionare almeno un giorno per ogni fascia oraria");
+        //alert("Selezionare almeno un giorno per ogni fascia oraria");
         return false;
       }
     }
@@ -90,35 +97,42 @@ const App = () => {
   return isLoading ? (
     <div className="loader">Loading...</div>
   ) : (
-    <div className="App">
-      <Header>
-        <h1>Shop Status</h1>
-        <button onClick={handleSave}>Salva</button>
-      </Header>
-      <AcceptReservations
-        title="Opzioni"
-        acceptReservations={acceptReservations}
-        setAcceptReservations={setAcceptReservations}
-      />
-      <hr />
-      <OpeningDays
-        title="Giorni di apertura"
-        checkedDays={checkedDays}
-        setCheckedDays={setCheckedDays}
-      />
-      <hr />
-      <OpeningTimes
-        title="Orari di apertura"
-        openingTimes={openingTimes}
-        setOpeningTimes={setOpeningTimes}
-      />
-      <hr />
-      <OpeningExceptions
-        title="Eccezioni"
-        openingExceptions={openingExceptions}
-        setOpeningExceptions={setOpeningExceptions}
-      />
-    </div>
+    <>
+      <div className="App">
+        <Header>
+          <h1>Shop Status</h1>
+          <Button
+            describedBy="shop-status-save"
+            showTooltip={true}
+            text="Salva"
+            shortcut="Salva le impostazioni"
+            variant="secondary"
+            onClick={handleSave}
+          />
+        </Header>
+        <AcceptReservations
+          title="Accetta Prenotazioni"
+          acceptReservations={acceptReservations}
+          setAcceptReservations={setAcceptReservations}
+        />
+        <OpeningDays
+          title="Giorni di apertura"
+          checkedDays={checkedDays}
+          setCheckedDays={setCheckedDays}
+        />
+        <OpeningTimes
+          title="Orari di apertura"
+          openingTimes={openingTimes}
+          setOpeningTimes={setOpeningTimes}
+        />
+        <OpeningExceptions
+          title="Eccezioni"
+          openingExceptions={openingExceptions}
+          setOpeningExceptions={setOpeningExceptions}
+        />
+      </div>
+      <Logger />
+    </>
   );
 };
 

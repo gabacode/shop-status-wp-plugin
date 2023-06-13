@@ -1,4 +1,5 @@
 import Select from "react-select";
+import { Button, Dashicon, Flex } from "@wordpress/components";
 import { v4 as uuidv4 } from "uuid";
 
 import { openingStatus } from "../../utils/constants";
@@ -8,6 +9,7 @@ export const OpeningExceptions = ({
   openingExceptions,
   setOpeningExceptions,
 }) => {
+  const today = new Date().toISOString().split("T")[0];
   const handleChange = (index, field, value) => {
     setOpeningExceptions((openingExceptions) =>
       openingExceptions.map((exception, i) =>
@@ -26,9 +28,9 @@ export const OpeningExceptions = ({
       ...openingExceptions,
       {
         id: uuidv4(),
-        date: "2023-02-14",
+        date: today,
         from: "09:00",
-        to: "18:00",
+        to: "12:00",
         is_open: true,
       },
     ]);
@@ -42,7 +44,16 @@ export const OpeningExceptions = ({
 
   return (
     <section>
-      <h1>{title}</h1>
+      <Flex justify="start" align="center">
+        <h1>{title}</h1>
+        <Button
+          isSmall
+          variant="secondary"
+          label="Add exception"
+          icon={<Dashicon icon="plus" />}
+          onClick={handleAddOpeningException}
+        />
+      </Flex>
       {openingExceptions?.map((openingException, index) => (
         <div key={openingException.id} className="opening-time-selector">
           <input
@@ -61,25 +72,34 @@ export const OpeningExceptions = ({
             onChange={(e) => handleChange(index, "to", e.target.value)}
           />
           <Select
+            isSearchable={false}
             options={openingStatus}
             onChange={(selected) =>
               handleChange(index, "is_open", selected.value)
             }
             defaultValue={openingStatus.find(
               (status) =>
-                status.value === openingException.is_open ??
-                openingStatus[0]
+                status.value === openingException.is_open ?? openingStatus[0]
             )}
             value={openingException.is_open.value}
           />
-          <button
+          <Button
+            isDestructive
+            isSmall
+            variant="secondary"
+            label="Remove exception"
+            icon={<Dashicon icon="minus" />}
             onClick={() => handleDeleteOpeningException(openingException.id)}
-          >
-            X
-          </button>
+          />
+          <Button
+            isSmall
+            variant="secondary"
+            label="Add exception"
+            icon={<Dashicon icon="plus" />}
+            onClick={handleAddOpeningException}
+          />
         </div>
       ))}
-      <button onClick={handleAddOpeningException}>Aggiungi eccezione</button>
     </section>
   );
 };
