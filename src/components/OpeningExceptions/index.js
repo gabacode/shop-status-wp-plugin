@@ -65,7 +65,11 @@ export const OpeningExceptions = ({
             onChange={(selected) =>
               handleChange(index, "is_open", selected.value)
             }
-            defaultValue={openingStatus[0]}
+            defaultValue={openingStatus.find(
+              (status) =>
+                status.value === openingException.is_open ??
+                openingStatus[0]
+            )}
             value={openingException.is_open.value}
           />
           <button
